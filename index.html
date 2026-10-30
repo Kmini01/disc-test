@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-scale=1.0">
+    <title>DISC 성격유형 검사 (30문항)</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 1.05rem;
+        }
+
+        .question-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .question-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #334155;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option-label:hover {
+            background: #eef2ff;
+            border-color: #c7d2fe;
+        }
+
+        .option-label input {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        #result-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            border: 1px solid #c7d2fe;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            color: #3730a3;
+            margin-bottom: 10px;
+        }
+
+        .result-highlight {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #312e81;
+            margin: 15px 0;
+        }
+
+        .score-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .score-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .score-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .score-card .type {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #4f46e5;
+        }
+
+        .score-card .score {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .description-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .description-box h3 {
+            color: #0f172a;
+            margin-top: 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .restart-btn {
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 30px auto 0;
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .restart-btn:hover {
+            background-color: #475569;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="test-section">
+        <h1>DISC 성격유형 검사</h1>
+        <p class="subtitle">각 문항에서 자신을 가장 잘 설명한다고 생각되는 단어를 하나씩 선택해주세요. (총 30문항)</p>
+        
+        <form id="disc-form">
+            <!-- 문항 동적 생성 -->
+        </form>
+
+        <div id="error-msg" class="error-msg">모든 문항(30문항)에 답변해주세요!</div>
+
+        <div class="btn-container">
+            <button type="button" class="submit-btn" onclick="calculateResult()">결과 확인하기</button>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <h1>✨ 나의 DISC 검사 결과</h1>
+        <p class="subtitle">분석된 성향 점수와 유형별 특징입니다.</p>
+
+        <div class="result-box">
+            <div class="result-title">가장 높게 나타난 나의 주 성향</div>
+            <div class="result-highlight" id="primary-type-text">-</div>
+            <div style="font-size: 1.05rem; color: #4338ca;" id="secondary-type-text">-</div>
+            
+            <div class="score-details">
+                <div class="score-card">
+                    <div class="type">D (주도형)</div>
+                    <div class="score" id="score-D">0점</div>
+                </div>
+                <div class="score-card">
+                    <div class="type">I (사교형)</div>
+                    <div class="score" id="score-I">0점</div>
+                </div>
+                <div class="score-card">
+                    <div class="type">S (안정형)</div>
+                    <div class="score" id="score-S">0점</div>
+                </div>
+                <div class="score-card">
+                    <div class="type">C (신중형)</div>
+                    <div class="score" id="score-C">0점</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="description-box" id="type-description">
+            <!-- 상세 설명 -->
+        </div>
+
+        <button type="button" class="restart-btn" onclick="resetTest()">다시 검사하기</button>
+    </div>
+</div>
+
+<script>
+    // 30문항 DISC 데이터 구성 (D, I, S, C 성향에 맞춘 문항 세트)
+    const questionsData = [
+        { id: 1, options: ["절제하는", "강력한", "꼼꼼한", "표현력 있는"] },
+        { id: 2, options: ["개척적인", "정확한", "흥미진진한", "만족스러운"] },
+        { id: 3, options: ["기꺼이 하는", "논쟁을 좋아하는", "활기 있는", "회의적인"] },
+        { id: 4, options: ["대담한", "주저하는", "정교한", "예측할 수 없는"] },
+        { id: 5, options: ["공손한", "사교적인", "참을성이 있는", "무서움을 모르는"] },
+        { id: 6, options: ["설득력 있는", "독립성이 강한", "논리적인", "온화한"] },
+        { id: 7, options: ["신중한", "차분한", "과단성 있는", "파티를 좋아하는"] },
+        { id: 8, options: ["인기있는", "고집 있는", "완벽주의자", "인심 좋은"] },
+        { id: 9, options: ["변화가 많은", "수줍음을 타는", "느긋한", "완고한"] },
+        { id: 10, options: ["체계적인", "낙관적인", "의지가 강한", "친절한"] },
+        { id: 11, options: ["엄격한", "겸손한", "상냥한", "말주변이 좋은"] },
+        { id: 12, options: ["호의적인", "빈틈없는", "놀기 좋아하는", "의지가 강한"] },
+        { id: 13, options: ["참신한", "모험적인", "절제된", "신중한"] },
+        { id: 14, options: ["참는", "성실한", "공격적인", "매력 있는"] },
+        { id: 15, options: ["열정적인", "분석적인", "동정심이 많은", "단호한"] },
+        { id: 16, options: ["지도력이 있는", "충동적인", "느린", "비판적인"] },
+        { id: 17, options: ["일관성 있는", "영향력 있는", "생기 있는", "느긋한"] },
+        { id: 18, options: ["유력한", "친절한", "독립적인", "정돈된"] },
+        { id: 19, options: ["이상주의적인", "평판이 좋은", "쾌활한", "솔직한"] },
+        { id: 20, options: ["참을성 없는", "진지한", "미루는", "감성적인"] },
+        { id: 21, options: ["경쟁심이 있는", "희생적인", "자발적인", "이해심이 많은"] },
+        { id: 22, options: ["충성스러운", "설득력 있는", "사려 깊은", "용기 있는"] },
+        { id: 23, options: ["의존적인", "변덕스러운", "절제력 있는", "밀어붙이는"] },
+        { id: 24, options: ["포용력 있는", "선동적인", "사람을 부추기는", "이끌어 가는"] },
+        // 추가된 25~30문항 (DISC 성향에 균형을 맞춘 확장 문항)
+        { id: 25, options: ["결단력 있는", "외향적인", "협조적인", "분석적인"] },
+        { id: 26, options: ["도전적인", "열정적인", "안정적인", "계획적인"] },
+        { id: 27, options: ["목표지향적", "사교적인", "온화한", "원칙주의적"] },
+        { id: 28, options: ["주도적인", "표현력 있는", "인내심 있는", "세심한"] },
+        { id: 29, options: ["진취적인", "낙천적인", "배려심 있는", "정확한"] },
+        { id: 30, options: ["독립적인", "유쾌한", "차분한", "철저한"] }
+    ];
+
+    // 각 문항의 1~4번 보기가 D, I, S, C 중 어디에 매칭되는지 정의한 채점표 (30문항분)
+    const exactMapping = [
+        { 1: 'S', 2: 'D', 3: 'C', 4: 'I' },
+        { 1: 'D', 2: 'C', 3: 'I', 4: 'S' },
+        { 1: 'S', 2: 'D', 3: 'I', 4: 'C' },
+        { 1: 'D', 2: 'S', 3: 'C', 4: 'I' },
+        { 1: 'C', 2: 'I', 3: 'S', 4: 'D' },
+        { 1: 'I', 2: 'D', 3: 'C', 4: 'S' },
+        { 1: 'C', 2: 'S', 3: 'D', 4: 'I' },
+        { 1: 'I', 2: 'D', 3: 'C', 4: 'S' },
+        { 1: 'I', 2: 'S', 3: 'C', 4: 'D' },
+        { 1: 'C', 2: 'I', 3: 'D', 4: 'S' },
+        { 1: 'C', 2: 'S', 3: 'I', 4: 'D' },
+        { 1: 'S', 2: 'C', 3: 'I', 4: 'D' },
+        { 1: 'I', 2: 'D', 3: 'S', 4: 'C' },
+        { 1: 'S', 2: 'C', 3: 'D', 4: 'I' },
+        { 1: 'I', 2: 'C', 3: 'S', 4: 'D' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'S', 2: 'I', 3: 'C', 4: 'D' },
+        { 1: 'D', 2: 'S', 3: 'D', 4: 'C' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'D', 2: 'C', 3: 'S', 4: 'I' },
+        { 1: 'D', 2: 'S', 3: 'I', 4: 'C' },
+        { 1: 'S', 2: 'I', 3: 'C', 4: 'D' },
+        { 1: 'S', 2: 'I', 3: 'D', 4: 'C' },
+        { 1: 'S', 2: 'I', 3: 'D', 4: 'C' },
+        // 25~30문항 매칭 규칙 (1:D, 2:I, 3:S, 4:C 순환 배정)
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
+        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' }
+    ];
+
+    // 유형별 설명 데이터
+    const typeDescriptions = {
+        'D': {
+            name: 'D유형 (Dominance - 주도형)',
+            desc: '결단력 있고 도전적이며 목표 지향적인 성향입니다. 결과를 빠르게 도출해내는 리더십이 뛰어나며, 도전 과제와 주도권을 잡을 수 있는 환경에서 능력을 발휘합니다.'
+        },
+        'I': {
+            name: 'I유형 (Influence - 사교형)',
+            desc: '낙관적이고 열정적이며 사람들과 어울리는 것을 좋아하는 사교적인 성향입니다. 타인을 설득하고 영감을 주는 능력이 뛰어나며 분위기를 밝게 만드는 재능이 있습니다.'
+        },
+        'S': {
+            name: 'S유형 (Steadiness - 안정형)',
+            desc: '참을성이 많고 협조적이며 온화한 안정 지향적 성향입니다. 타인의 이야기를 잘 들어주고 팀의 조화와 안정감을 중요하게 생각하며 꾸준하게 책임을 다합니다.'
+        },
+        'C': {
+            name: 'C유형 (Conscientiousness - 신중형)',
+            desc: '정확하고 분석적이며 철저한 원칙주의 성향입니다. 세부적인 디테일을 놓치지 않으며 논리적이고 체계적으로 업무를 완수하는 뛰어난 전문성을 가지고 있습니다.'
+        }
+    };
+
+    // 문항 동적 생성 (30문항)
+    function renderQuestions() {
+        const formContainer = document.getElementById('disc-form');
+        let html = '';
+
+        questionsData.forEach((q) => {
+            html += `
+                <div class="question-card">
+                    <div class="question-title">Q${q.id}. 다음 중 자신을 가장 잘 표현하는 단어는?</div>
+                    <div class="options-grid">
+            `;
+            q.options.forEach((opt, optIndex) => {
+                const choiceNum = optIndex + 1;
+                html += `
+                    <label class="option-label">
+                        <input type="radio" name="q${q.id}" value="${choiceNum}">
+                        ${choiceNum}. ${opt}
+                    </label>
+                `;
+            });
+            html += `
+                    </div>
+                </div>
+            `;
+        });
+        formContainer.innerHTML = html;
+    }
+
+    // 결과 계산 함수 (30문항 전체 체크 검증)
+    function calculateResult() {
+        let scores = { 'D': 0, 'I': 0, 'S': 0, 'C': 0 };
+        let allAnswered = true;
+
+        for (let i = 1; i <= 30; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (!selected) {
+                allAnswered = false;
+                break;
+            }
+            const choiceVal = parseInt(selected.value);
+            const matchedType = exactMapping[i - 1][choiceVal];
+            scores[matchedType]++;
+        }
+
+        const errorMsg = document.getElementById('error-msg');
+        if (!allAnswered) {
+            errorMsg.style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            return;
+        }
+        errorMsg.style.display = 'none';
+
+        // 점수 높은 순 정렬
+        const sortedTypes = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+        const primary = sortedTypes[0];
+        const secondary = sortedTypes[1];
+
+        // 점수 표시
+        document.getElementById('score-D').innerText = scores['D'] + '점';
+        document.getElementById('score-I').innerText = scores['I'] + '점';
+        document.getElementById('score-S').innerText = scores['S'] + '점';
+        document.getElementById('score-C').innerText = scores['C'] + '점';
+
+        document.getElementById('primary-type-text').innerText = `1순위 유형: ${typeDescriptions[primary[0]].name} (${primary[1]}점)`;
+        document.getElementById('secondary-type-text').innerText = `2순위 유형: ${typeDescriptions[secondary[0]].name} (${secondary[1]}점)`;
+
+        // 설명 구성
+        const descHTML = `
+            <h3>🔍 ${typeDescriptions[primary[0]].name} 상세 설명</h3>
+            <p>${typeDescriptions[primary[0]].desc}</p>
+            <br>
+            <h3>💡 ${typeDescriptions[secondary[0]].name} 보조 성향 설명</h3>
+            <p>${typeDescriptions[secondary[0]].desc}</p>
+        `;
+        document.getElementById('type-description').innerHTML = descHTML;
+
+        // 화면 전환
+        document.getElementById('test-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 초기화
+    function resetTest() {
+        document.getElementById('disc-form').reset();
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('test-section').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.onload = renderQuestions;
+</script>
+
+</body>
+</html>
