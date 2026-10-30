@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-scale=1.0">
-    <title>DISC 성격유형 검사 (30문항)</title>
+    <title>상황별 DISC 행동유형 검사</title>
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #1e293b;
@@ -15,7 +15,7 @@
         }
 
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
@@ -48,43 +48,29 @@
         .question-card {
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            padding: 20px;
+            padding: 24px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             transition: all 0.2s ease;
         }
 
-        .question-card:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-
         .question-title {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #334155;
+            margin-bottom: 16px;
+            color: #1e293b;
         }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        @media (max-width: 600px) {
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-            .container {
-                padding: 20px;
-            }
+        .options-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .option-label {
             display: flex;
-            align-items: center;
-            padding: 12px 16px;
+            align-items: flex-start;
+            padding: 14px 16px;
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -94,15 +80,17 @@
         }
 
         .option-label:hover {
-            background: #eef2ff;
-            border-color: #c7d2fe;
+            background: #eff6ff;
+            border-color: #bfdbfe;
         }
 
         .option-label input {
-            margin-right: 10px;
+            margin-top: 3px;
+            margin-right: 12px;
             accent-color: var(--primary-color);
             width: 18px;
             height: 18px;
+            flex-shrink: 0;
         }
 
         .btn-container {
@@ -120,15 +108,11 @@
             border-radius: 12px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
         .submit-btn:hover {
             background-color: var(--primary-hover);
-        }
-
-        .submit-btn:active {
-            transform: scale(0.98);
         }
 
         #result-section {
@@ -142,8 +126,8 @@
         }
 
         .result-box {
-            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-            border: 1px solid #c7d2fe;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #bfdbfe;
             border-radius: 16px;
             padding: 30px;
             text-align: center;
@@ -152,14 +136,14 @@
 
         .result-title {
             font-size: 1.3rem;
-            color: #3730a3;
+            color: #1e40af;
             margin-bottom: 10px;
         }
 
         .result-highlight {
             font-size: 2.2rem;
             font-weight: 800;
-            color: #312e81;
+            color: #1e3a8a;
             margin: 15px 0;
         }
 
@@ -186,7 +170,7 @@
         .score-card .type {
             font-weight: bold;
             font-size: 1.2rem;
-            color: #4f46e5;
+            color: #2563eb;
         }
 
         .score-card .score {
@@ -244,14 +228,12 @@
 
 <div class="container">
     <div id="test-section">
-        <h1>DISC 성격유형 검사</h1>
-        <p class="subtitle">각 문항에서 자신을 가장 잘 설명한다고 생각되는 단어를 하나씩 선택해주세요. (총 30문항)</p>
+        <h1>상황별 DISC 행동유형 검사</h1>
+        <p class="subtitle">각 상황에서 당신이 가장 취할 것 같은 행동을 선택해주세요. (총 10문항)</p>
         
-        <form id="disc-form">
-            <!-- 문항 동적 생성 -->
-        </form>
+        <form id="disc-form"></form>
 
-        <div id="error-msg" class="error-msg">모든 문항(30문항)에 답변해주세요!</div>
+        <div id="error-msg" class="error-msg">모든 문항에 답변해주세요!</div>
 
         <div class="btn-container">
             <button type="button" class="submit-btn" onclick="calculateResult()">결과 확인하기</button>
@@ -259,13 +241,13 @@
     </div>
 
     <div id="result-section">
-        <h1>✨ 나의 DISC 검사 결과</h1>
-        <p class="subtitle">분석된 성향 점수와 유형별 특징입니다.</p>
+        <h1>✨ 나의 DISC 행동유형 결과</h1>
+        <p class="subtitle">상황별 반응을 분석한 성향 점수와 유형별 특징입니다.</p>
 
         <div class="result-box">
             <div class="result-title">가장 높게 나타난 나의 주 성향</div>
             <div class="result-highlight" id="primary-type-text">-</div>
-            <div style="font-size: 1.05rem; color: #4338ca;" id="secondary-type-text">-</div>
+            <div style="font-size: 1.05rem; color: #1d4ed8;" id="secondary-type-text">-</div>
             
             <div class="score-details">
                 <div class="score-card">
@@ -287,122 +269,154 @@
             </div>
         </div>
 
-        <div class="description-box" id="type-description">
-            <!-- 상세 설명 -->
-        </div>
+        <div class="description-box" id="type-description"></div>
 
         <button type="button" class="restart-btn" onclick="resetTest()">다시 검사하기</button>
     </div>
 </div>
 
 <script>
-    // 30문항 DISC 데이터 구성 (D, I, S, C 성향에 맞춘 문항 세트)
-    const questionsData = [
-        { id: 1, options: ["절제하는", "강력한", "꼼꼼한", "표현력 있는"] },
-        { id: 2, options: ["개척적인", "정확한", "흥미진진한", "만족스러운"] },
-        { id: 3, options: ["기꺼이 하는", "논쟁을 좋아하는", "활기 있는", "회의적인"] },
-        { id: 4, options: ["대담한", "주저하는", "정교한", "예측할 수 없는"] },
-        { id: 5, options: ["공손한", "사교적인", "참을성이 있는", "무서움을 모르는"] },
-        { id: 6, options: ["설득력 있는", "독립성이 강한", "논리적인", "온화한"] },
-        { id: 7, options: ["신중한", "차분한", "과단성 있는", "파티를 좋아하는"] },
-        { id: 8, options: ["인기있는", "고집 있는", "완벽주의자", "인심 좋은"] },
-        { id: 9, options: ["변화가 많은", "수줍음을 타는", "느긋한", "완고한"] },
-        { id: 10, options: ["체계적인", "낙관적인", "의지가 강한", "친절한"] },
-        { id: 11, options: ["엄격한", "겸손한", "상냥한", "말주변이 좋은"] },
-        { id: 12, options: ["호의적인", "빈틈없는", "놀기 좋아하는", "의지가 강한"] },
-        { id: 13, options: ["참신한", "모험적인", "절제된", "신중한"] },
-        { id: 14, options: ["참는", "성실한", "공격적인", "매력 있는"] },
-        { id: 15, options: ["열정적인", "분석적인", "동정심이 많은", "단호한"] },
-        { id: 16, options: ["지도력이 있는", "충동적인", "느린", "비판적인"] },
-        { id: 17, options: ["일관성 있는", "영향력 있는", "생기 있는", "느긋한"] },
-        { id: 18, options: ["유력한", "친절한", "독립적인", "정돈된"] },
-        { id: 19, options: ["이상주의적인", "평판이 좋은", "쾌활한", "솔직한"] },
-        { id: 20, options: ["참을성 없는", "진지한", "미루는", "감성적인"] },
-        { id: 21, options: ["경쟁심이 있는", "희생적인", "자발적인", "이해심이 많은"] },
-        { id: 22, options: ["충성스러운", "설득력 있는", "사려 깊은", "용기 있는"] },
-        { id: 23, options: ["의존적인", "변덕스러운", "절제력 있는", "밀어붙이는"] },
-        { id: 24, options: ["포용력 있는", "선동적인", "사람을 부추기는", "이끌어 가는"] },
-        // 추가된 25~30문항 (DISC 성향에 균형을 맞춘 확장 문항)
-        { id: 25, options: ["결단력 있는", "외향적인", "협조적인", "분석적인"] },
-        { id: 26, options: ["도전적인", "열정적인", "안정적인", "계획적인"] },
-        { id: 27, options: ["목표지향적", "사교적인", "온화한", "원칙주의적"] },
-        { id: 28, options: ["주도적인", "표현력 있는", "인내심 있는", "세심한"] },
-        { id: 29, options: ["진취적인", "낙천적인", "배려심 있는", "정확한"] },
-        { id: 30, options: ["독립적인", "유쾌한", "차분한", "철저한"] }
+    // 각 문항별로 D, I, S, C 보기를 미리 정의하되 순서를 무작위로 섞어 배치
+    const situationalQuestions = [
+        {
+            id: 1,
+            situation: "새로운 프로젝트나 팀 과제가 주어졌을 때, 당신의 첫 번째 태도는?",
+            options: [
+                { text: "규정과 세부 지침을 꼼꼼히 확인하고 분석부터 시작한다.", type: "C" },
+                { text: "빨리 목표를 설정하고 주도적으로 계획을 이끌어간다.", type: "D" },
+                { text: "조용히 팀원들의 의견을 경청하고 지원할 역할을 찾는다.", type: "S" },
+                { text: "팀원들과 즐겁게 아이디어를 나누며 분위기를 띄운다.", type: "I" }
+            ]
+        },
+        {
+            id: 2,
+            situation: "회의 중에 의견 충돌이 발생해 분위기가 팽팽해졌을 때, 당신은 어떻게 행동하나요?",
+            options: [
+                { text: "갈등이 커지지 않도록 양쪽 입장을 배려하며 중재한다.", type: "S" },
+                { text: "객관적인 데이터와 사실을 근거로 논리적 타당성을 따져묻는다.", type: "C" },
+                { text: "부드러운 농담이나 유머로 굳은 분위기를 유연하게 만든다.", type: "I" },
+                { text: "핵심을 짚어 빠르게 결론을 내리도록 직설적으로 정리한다.", type: "D" }
+            ]
+        },
+        {
+            id: 3,
+            situation: "일과 중 갑작스럽게 예상치 못한 변수가 생겨 일정이 촉박해졌습니다. 당신의 반응은?",
+            options: [
+                { text: "주변 사람들에게 도움을 청하고 함께 해결책을 찾는다.", type: "I" },
+                { text: "어디서부터 잘못되었는지 원인을 분석하고 철저히 수정한다.", type: "C" },
+                { text: "당황하지 않고 즉각적으로 대안을 찾아 밀어붙인다.", type: "D" },
+                { text: "원래 하던 루틴이 흔들려 잠시 불안하지만 묵묵히 버틴다.", type: "S" }
+            ]
+        },
+        {
+            id: 4,
+            situation: "다른 사람의 부탁을 거절해야 하는 상황이 생겼을 때, 당신의 스타일은?",
+            options: [
+                { text: "관계가 어색해질까 봐 거절하지 못하고 일단 수용한다.", type: "S" },
+                { text: "필요하다면 단호하고 명확하게 거절 의사를 표현한다.", type: "D" },
+                { text: "합리적인 이유와 근거를 들어 정중하지만 이성적으로 거절한다.", type: "C" },
+                { text: "상대가 서운해하지 않도록 친근하고 부드럽게 돌려 말한다.", type: "I" }
+            ]
+        },
+        {
+            id: 5,
+            situation: "주말이나 여가 시간에 주로 선호하는 활동 유형은?",
+            options: [
+                { text: "책 읽기, 전시 관람, 혼자만의 깊이 있는 사색을 즐긴다.", type: "C" },
+                { text: "집에서 편안하게 휴식을 취하거나 익숙한 취미를 한다.", type: "S" },
+                { text: "새로운 스포츠나 도전적인 야외 활동을 즐긴다.", type: "D" },
+                { text: "친구들이나 모임에 나가 사람들과 어울리는 것을 즐긴다.", type: "I" }
+            ]
+        },
+        {
+            id: 6,
+            situation: "일을 처리할 때 당신이 가장 중요하게 생각하는 가치는 무엇인가요?",
+            options: [
+                { text: "사람들과의 소통, 즐거움과 인정", type: "I" },
+                { text: "완벽하고 정확한 업무 품질과 원칙", type: "C" },
+                { text: "뚜렷한 성과와 빠른 목표 달성", type: "D" },
+                { text: "안정적이고 조화로운 협업 분위기", type: "S" }
+            ]
+        },
+        {
+            id: 7,
+            situation: "다른 사람의 말을 경청할 때, 당신의 평소 모습은?",
+            options: [
+                { text: "상대의 감정에 공감하며 끝까지 따뜻하게 들어준다.", type: "S" },
+                { text: "결론이 무엇인지 핵심 위주로 빠르게 파악하려 한다.", type: "D" },
+                { text: "세부적인 사실 관계와 논리적 모순이 없는지 따져가며 듣는다.", type: "C" },
+                { text: "다양한 리액션과 제스처를 섞어가며 흥미롭게 듣는다.", type: "I" }
+            ]
+        },
+        {
+            id: 8,
+            situation: "낯선 모임이나 처음 보는 사람들 사이에 혼자 있게 되었을 때?",
+            options: [
+                { text: "금방 주변 사람들과 친해져 유쾌한 대화를 주도한다.", type: "I" },
+                { text: "상황을 관찰하며 필요한 대화만 조용히 나눈다.", type: "C" },
+                { text: "누군가 말을 걸어주기를 기다리며 미소를 띠고 차분히 앉아있다.", type: "S" },
+                { text: "먼저 다가가 주도적으로 대화를 리드하며 자신을 알린다.", type: "D" }
+            ]
+        },
+        {
+            id: 9,
+            situation: "상사나 동료로부터 업무 피드백(비판)을 받았을 때의 태도는?",
+            options: [
+                { text: "피드백의 타당성을 이성적으로 분석하고 세부 계획을 수정한다.", type: "C" },
+                { text: "금방 털어내고 분위기를 밝게 유지하려 노력한다.", type: "I" },
+                { text: "마음속으로 조금 상처를 받거나 오래 담아두는 편이다.", type: "S" },
+                { text: "결과를 개선하기 위해 무엇을 고치면 되는지 직관적으로 수용한다.", type: "D" }
+            ]
+        },
+        {
+            id: 10,
+            situation: "새로운 제품이나 서비스를 구매할 때 당신의 결정 방식은?",
+            options: [
+                { text: "후기가 검증되고 오래 쓸 수 있는 안정적인 제품을 선택한다.", type: "S" },
+                { text: "성능 스펙, 가격 비교, 후기를 꼼꼼히 따져보고 합리적으로 구매한다.", type: "C" },
+                { text: "필요성이 느껴지면 남들보다 빠르게 과감하게 지른다.", type: "D" },
+                { text: "디자인이 예쁘거나 주변에서 추천하는 핫한 아이템을 산다.", type: "I" }
+            ]
+        }
     ];
 
-    // 각 문항의 1~4번 보기가 D, I, S, C 중 어디에 매칭되는지 정의한 채점표 (30문항분)
-    const exactMapping = [
-        { 1: 'S', 2: 'D', 3: 'C', 4: 'I' },
-        { 1: 'D', 2: 'C', 3: 'I', 4: 'S' },
-        { 1: 'S', 2: 'D', 3: 'I', 4: 'C' },
-        { 1: 'D', 2: 'S', 3: 'C', 4: 'I' },
-        { 1: 'C', 2: 'I', 3: 'S', 4: 'D' },
-        { 1: 'I', 2: 'D', 3: 'C', 4: 'S' },
-        { 1: 'C', 2: 'S', 3: 'D', 4: 'I' },
-        { 1: 'I', 2: 'D', 3: 'C', 4: 'S' },
-        { 1: 'I', 2: 'S', 3: 'C', 4: 'D' },
-        { 1: 'C', 2: 'I', 3: 'D', 4: 'S' },
-        { 1: 'C', 2: 'S', 3: 'I', 4: 'D' },
-        { 1: 'S', 2: 'C', 3: 'I', 4: 'D' },
-        { 1: 'I', 2: 'D', 3: 'S', 4: 'C' },
-        { 1: 'S', 2: 'C', 3: 'D', 4: 'I' },
-        { 1: 'I', 2: 'C', 3: 'S', 4: 'D' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'S', 2: 'I', 3: 'C', 4: 'D' },
-        { 1: 'D', 2: 'S', 3: 'D', 4: 'C' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'D', 2: 'C', 3: 'S', 4: 'I' },
-        { 1: 'D', 2: 'S', 3: 'I', 4: 'C' },
-        { 1: 'S', 2: 'I', 3: 'C', 4: 'D' },
-        { 1: 'S', 2: 'I', 3: 'D', 4: 'C' },
-        { 1: 'S', 2: 'I', 3: 'D', 4: 'C' },
-        // 25~30문항 매칭 규칙 (1:D, 2:I, 3:S, 4:C 순환 배정)
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' },
-        { 1: 'D', 2: 'I', 3: 'S', 4: 'C' }
-    ];
-
-    // 유형별 설명 데이터
     const typeDescriptions = {
         'D': {
             name: 'D유형 (Dominance - 주도형)',
-            desc: '결단력 있고 도전적이며 목표 지향적인 성향입니다. 결과를 빠르게 도출해내는 리더십이 뛰어나며, 도전 과제와 주도권을 잡을 수 있는 환경에서 능력을 발휘합니다.'
+            desc: '결단력 있고 도전적이며 목표 지향적인 성향입니다. 상황을 빠르게 통제하고 결과를 도출해내는 능력이 뛰어나며, 주도적으로 문제를 해결하려는 성향이 강합니다.'
         },
         'I': {
             name: 'I유형 (Influence - 사교형)',
-            desc: '낙관적이고 열정적이며 사람들과 어울리는 것을 좋아하는 사교적인 성향입니다. 타인을 설득하고 영감을 주는 능력이 뛰어나며 분위기를 밝게 만드는 재능이 있습니다.'
+            desc: '낙관적이고 열정적이며 사람들과의 소통을 즐기는 사교적인 성향입니다. 긍정적인 에너지로 분위기를 밝게 만들고 타인에게 영감을 주는 재능이 뛰어납니다.'
         },
         'S': {
             name: 'S유형 (Steadiness - 안정형)',
-            desc: '참을성이 많고 협조적이며 온화한 안정 지향적 성향입니다. 타인의 이야기를 잘 들어주고 팀의 조화와 안정감을 중요하게 생각하며 꾸준하게 책임을 다합니다.'
+            desc: '참을성이 많고 협조적이며 온화한 안정 지향적 성향입니다. 갈등을 피하고 주변 사람들과 조화를 이루며 꾸준하게 자리를 지키는 든든한 조력자 스타일입니다.'
         },
         'C': {
             name: 'C유형 (Conscientiousness - 신중형)',
-            desc: '정확하고 분석적이며 철저한 원칙주의 성향입니다. 세부적인 디테일을 놓치지 않으며 논리적이고 체계적으로 업무를 완수하는 뛰어난 전문성을 가지고 있습니다.'
+            desc: '정확하고 분석적이며 철저한 원칙주의 성향입니다. 상황을 객관적이고 논리적으로 분석하며 세부적인 디테일을 놓치지 않는 뛰어난 전문성을 가지고 있습니다.'
         }
     };
 
-    // 문항 동적 생성 (30문항)
     function renderQuestions() {
         const formContainer = document.getElementById('disc-form');
         let html = '';
 
-        questionsData.forEach((q) => {
+        situationalQuestions.forEach((q) => {
             html += `
                 <div class="question-card">
-                    <div class="question-title">Q${q.id}. 다음 중 자신을 가장 잘 표현하는 단어는?</div>
-                    <div class="options-grid">
+                    <div class="question-title">Q${q.id}. ${q.situation}</div>
+                    <div class="options-stack">
             `;
-            q.options.forEach((opt, optIndex) => {
-                const choiceNum = optIndex + 1;
+            // 각 문항 내에서 보기 순서를 무작위로 섞어서 렌더링
+            let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((opt) => {
                 html += `
                     <label class="option-label">
-                        <input type="radio" name="q${q.id}" value="${choiceNum}">
-                        ${choiceNum}. ${opt}
+                        <input type="radio" name="q${q.id}" value="${opt.type}">
+                        <span>${opt.text}</span>
                     </label>
                 `;
             });
@@ -414,20 +428,17 @@
         formContainer.innerHTML = html;
     }
 
-    // 결과 계산 함수 (30문항 전체 체크 검증)
     function calculateResult() {
         let scores = { 'D': 0, 'I': 0, 'S': 0, 'C': 0 };
         let allAnswered = true;
 
-        for (let i = 1; i <= 30; i++) {
+        for (let i = 1; i <= situationalQuestions.length; i++) {
             const selected = document.querySelector(`input[name="q${i}"]:checked`);
             if (!selected) {
                 allAnswered = false;
                 break;
             }
-            const choiceVal = parseInt(selected.value);
-            const matchedType = exactMapping[i - 1][choiceVal];
-            scores[matchedType]++;
+            scores[selected.value]++;
         }
 
         const errorMsg = document.getElementById('error-msg');
@@ -438,12 +449,10 @@
         }
         errorMsg.style.display = 'none';
 
-        // 점수 높은 순 정렬
         const sortedTypes = Object.entries(scores).sort((a, b) => b[1] - a[1]);
         const primary = sortedTypes[0];
         const secondary = sortedTypes[1];
 
-        // 점수 표시
         document.getElementById('score-D').innerText = scores['D'] + '점';
         document.getElementById('score-I').innerText = scores['I'] + '점';
         document.getElementById('score-S').innerText = scores['S'] + '점';
@@ -452,7 +461,6 @@
         document.getElementById('primary-type-text').innerText = `1순위 유형: ${typeDescriptions[primary[0]].name} (${primary[1]}점)`;
         document.getElementById('secondary-type-text').innerText = `2순위 유형: ${typeDescriptions[secondary[0]].name} (${secondary[1]}점)`;
 
-        // 설명 구성
         const descHTML = `
             <h3>🔍 ${typeDescriptions[primary[0]].name} 상세 설명</h3>
             <p>${typeDescriptions[primary[0]].desc}</p>
@@ -462,15 +470,13 @@
         `;
         document.getElementById('type-description').innerHTML = descHTML;
 
-        // 화면 전환
         document.getElementById('test-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 초기화
     function resetTest() {
-        document.getElementById('disc-form').reset();
+        renderQuestions(); // 다시 검사 시 보기 순서가 새로 섞이도록 설정
         document.getElementById('result-section').style.display = 'none';
         document.getElementById('test-section').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
